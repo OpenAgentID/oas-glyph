@@ -1,0 +1,30 @@
+[package]
+name = "oas-glyph-tui"
+description = "Terminal rendering of OpenAgent Glyphs — identity avatars in your CLI"
+keywords = ["did", "identity", "terminal", "tui", "openagent"]
+categories = ["command-line-interface", "encoding", "visualization"]
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "oas_glyph_tui"
+path = "src/lib.rs"
+
+[[bin]]
+name = "oas-glyph"
+path = "src/main.rs"
+
+[dependencies]
+oas-glyph = { path = "../oas-glyph" }
+crossterm = { workspace = true }
+ratatui = { workspace = true }
+base64 = { workspace = true }
+clap = { workspace = true }
+unicode-width = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+image = { workspace = true }

@@ -1,0 +1,13 @@
+target/
+node_modules/
+.env
+dist/
+.DS_Store
+.git-backups/
+__pycache__/
+*.pyc
+.build/
+.swiftpm/
+
+.claude-flow/
+**/.claude-flow/
