@@ -151,3 +151,14 @@ In practice that means:
 - glyph payloads should be generated from OAS-valid DIDs
 - glyph scans should reconstruct OAS-valid DIDs
 - any post-scan verification should use the core OAS libraries, not glyph-local trust shortcuts
+
+## Contributing and Security
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development and pull-request
+guidance. Report vulnerabilities privately according to
+[SECURITY.md](./SECURITY.md).
+
+## License
+
+Licensed under either the [Apache License, Version 2.0](./LICENSE-APACHE) or
+the [MIT License](./LICENSE-MIT), at your option.
