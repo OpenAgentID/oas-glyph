@@ -158,10 +158,13 @@ fn main() {
             }
         }
 
-        Commands::Gallery { namespace, renderer } => {
+        Commands::Gallery {
+            namespace,
+            renderer,
+        } => {
             let kinds = [
-                "hmr", "mhr", "ao", "agent", "tool", "skill",
-                "workflow", "model", "dataset", "service",
+                "hmr", "mhr", "ao", "agent", "tool", "skill", "workflow", "model", "dataset",
+                "service",
             ];
 
             let cap = renderer
@@ -195,15 +198,13 @@ fn main() {
             }
         }
 
-        Commands::Inspect { did } => {
-            match inspect_did(&did) {
-                Ok(()) => {}
-                Err(e) => {
-                    eprintln!("Error: {}", e);
-                    std::process::exit(1);
-                }
+        Commands::Inspect { did } => match inspect_did(&did) {
+            Ok(()) => {}
+            Err(e) => {
+                eprintln!("Error: {}", e);
+                std::process::exit(1);
             }
-        }
+        },
 
         Commands::Diag => {
             detect::print_diagnostics();
@@ -238,10 +239,14 @@ fn inspect_did(did: &str) -> std::result::Result<(), Box<dyn std::error::Error>>
     println!();
     println!("  ╭─ Glyph Encoding Inspector ──────────────╮");
     println!("  │                                          │");
-    println!("  │  DID:        {}…{}", &did[..20], &did[did.len()-8..]);
+    println!("  │  DID:        {}…{}", &did[..20], &did[did.len() - 8..]);
     println!("  │  Namespace:  {:>28} │", parsed.namespace);
     println!("  │  Kind:       {:>28} │", parsed.kind.as_str());
-    println!("  │  Identifier: {}…{}", &parsed.identifier[..8], &parsed.identifier[parsed.identifier.len()-6..]);
+    println!(
+        "  │  Identifier: {}…{}",
+        &parsed.identifier[..8],
+        &parsed.identifier[parsed.identifier.len() - 6..]
+    );
     println!("  │                                          │");
     println!("  │  Grid:       {:>22}×{} cells │", 12, 12);
     println!("  │  Data cells: {:>28} │", grid.data_cell_count);
@@ -250,7 +255,10 @@ fn inspect_did(did: &str) -> std::result::Result<(), Box<dyn std::error::Error>>
     println!("  │  Payload:    {:>24} bytes │", ecc_info.data_bytes);
     println!("  │  ECC parity: {:>24} bytes │", ecc_info.parity_bytes);
     println!("  │  Codeword:   {:>24} bytes │", ecc_info.total_bytes);
-    println!("  │  Correction: {:>25.0}% │", ecc_info.correction_capacity_percent);
+    println!(
+        "  │  Correction: {:>25.0}% │",
+        ecc_info.correction_capacity_percent
+    );
     println!("  │                                          │");
     println!("  │  Payload hex:                            │");
 
@@ -270,6 +278,10 @@ fn inspect_did(did: &str) -> std::result::Result<(), Box<dyn std::error::Error>>
 fn print_color_swatch(label: &str, c: &oas_glyph::visual::palette::Color) {
     println!(
         "{} \x1b[48;2;{};{};{}m      \x1b[0m  {}",
-        label, c.r, c.g, c.b, c.to_hex()
+        label,
+        c.r,
+        c.g,
+        c.b,
+        c.to_hex()
     );
 }

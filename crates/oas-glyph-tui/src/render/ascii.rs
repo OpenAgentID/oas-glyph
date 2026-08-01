@@ -7,8 +7,8 @@
 //! Each character cell maps to one grid cell. Block density encodes brightness.
 //! Color uses the nearest match in the 256-color ANSI palette.
 
-use crate::{RenderOptions, GlyphSize, Result};
-use super::{reset, grid_to_color_buffer};
+use super::{grid_to_color_buffer, reset};
+use crate::{GlyphSize, RenderOptions, Result};
 use oas_glyph::encoding::GlyphGrid;
 use oas_glyph::visual::palette::GlyphPalette;
 
@@ -17,11 +17,7 @@ const DENSITY: [char; 5] = [' ', '░', '▒', '▓', '█'];
 
 /// Render using ASCII blocks with 256-color ANSI.
 #[allow(clippy::needless_range_loop)]
-pub fn render(
-    grid: &GlyphGrid,
-    palette: &GlyphPalette,
-    opts: &RenderOptions,
-) -> Result<String> {
+pub fn render(grid: &GlyphGrid, palette: &GlyphPalette, opts: &RenderOptions) -> Result<String> {
     let cols = resolve_cols(opts);
     let rows = cols; // Square aspect (each char is ~2:1 but we keep it simple)
 
@@ -78,9 +74,7 @@ fn resolve_cols(opts: &RenderOptions) -> usize {
         GlyphSize::Cells(w, _) => w as usize,
         GlyphSize::Compact => 12,
         GlyphSize::Auto => {
-            let term_cols = crossterm::terminal::size()
-                .map(|(c, _)| c)
-                .unwrap_or(80);
+            let term_cols = crossterm::terminal::size().map(|(c, _)| c).unwrap_or(80);
             ((term_cols as f64 * 0.3) as usize).clamp(12, 36)
         }
         GlyphSize::Pixels(w, _) => (w / 8) as usize,

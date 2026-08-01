@@ -37,9 +37,8 @@ fn full_encoding_roundtrip_all_kinds() {
         let recovered_codeword = grid.to_codeword().expect("to_codeword failed");
         // The recovered bytes contain the original codeword bytes plus any padding;
         // we only need the first codeword.len() bytes.
-        let decoded_payload =
-            decode_with_ecc(&recovered_codeword[..codeword.len()], payload.len())
-                .expect("ecc decode failed");
+        let decoded_payload = decode_with_ecc(&recovered_codeword[..codeword.len()], payload.len())
+            .expect("ecc decode failed");
         let decoded = decode_did_payload(&decoded_payload).expect("payload decode failed");
 
         assert_eq!(decoded.kind, parsed.kind, "kind mismatch for {}", did);
@@ -54,7 +53,12 @@ fn svg_render_all_kinds() {
         let svg = did_to_svg(did, None).unwrap_or_else(|e| panic!("SVG failed for {}: {}", did, e));
         assert!(svg.starts_with("<svg"), "bad SVG for {}", did);
         assert!(svg.ends_with("</svg>"), "bad SVG end for {}", did);
-        assert!(svg.len() > 1000, "SVG too short for {}: {} bytes", did, svg.len());
+        assert!(
+            svg.len() > 1000,
+            "SVG too short for {}: {} bytes",
+            did,
+            svg.len()
+        );
     }
 }
 
@@ -65,7 +69,12 @@ fn png_render_all_kinds() {
         let png = did_to_png(did, 128).unwrap_or_else(|e| panic!("PNG failed for {}: {}", did, e));
         assert!(png.len() > 100, "PNG too small for {}", did);
         // PNG magic bytes
-        assert_eq!(&png[0..4], &[0x89, 0x50, 0x4E, 0x47], "bad PNG magic for {}", did);
+        assert_eq!(
+            &png[0..4],
+            &[0x89, 0x50, 0x4E, 0x47],
+            "bad PNG magic for {}",
+            did
+        );
     }
 }
 

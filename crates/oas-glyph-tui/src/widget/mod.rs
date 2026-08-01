@@ -17,14 +17,14 @@
 //! }
 //! ```
 
+use oas_glyph::encoding::grid::GlyphGrid;
+use oas_glyph::visual::palette::{Color, GlyphPalette};
 use ratatui::{
     buffer::Buffer,
     layout::Rect,
     style::{Color as RColor, Style},
     widgets::Widget,
 };
-use oas_glyph::encoding::grid::GlyphGrid;
-use oas_glyph::visual::palette::{Color, GlyphPalette};
 
 /// A ratatui widget that renders a OpenAgent Glyph.
 pub struct GlyphWidget {
@@ -96,9 +96,8 @@ impl Widget for GlyphWidget {
 
         // Build the color buffer
         let pixel_rows = glyph_rows * 2; // Half-block: 2 pixels per char row
-        let color_buf = crate::render::grid_to_color_buffer(
-            &self.grid, &self.palette, glyph_cols, pixel_rows,
-        );
+        let color_buf =
+            crate::render::grid_to_color_buffer(&self.grid, &self.palette, glyph_cols, pixel_rows);
 
         // Render using half-block technique
         for row in 0..glyph_rows {
@@ -123,9 +122,11 @@ impl Widget for GlyphWidget {
                 let cell = buf.cell_mut((buf_x, buf_y));
                 if let Some(cell) = cell {
                     cell.set_char('▀');
-                    cell.set_style(Style::default()
-                        .fg(to_ratatui_color(top))
-                        .bg(to_ratatui_color(bottom)));
+                    cell.set_style(
+                        Style::default()
+                            .fg(to_ratatui_color(top))
+                            .bg(to_ratatui_color(bottom)),
+                    );
                 }
             }
         }
@@ -136,12 +137,13 @@ impl Widget for GlyphWidget {
             if label_y < area.y + area.height {
                 // Truncate DID for display
                 let display_did = if self.did.len() > avail_cols {
-                    format!("{}…{}", &self.did[..16], &self.did[self.did.len()-12..])
+                    format!("{}…{}", &self.did[..16], &self.did[self.did.len() - 12..])
                 } else {
                     self.did.clone()
                 };
 
-                let x_start = area.x + ((avail_cols - display_did.len().min(avail_cols)) / 2) as u16;
+                let x_start =
+                    area.x + ((avail_cols - display_did.len().min(avail_cols)) / 2) as u16;
                 buf.set_string(
                     x_start,
                     label_y,
@@ -204,9 +206,7 @@ impl Widget for CompactGlyphWidget {
 
         // Render a single-line glyph: 6 half-block characters
         let cols = 6usize.min(area.width as usize);
-        let color_buf = crate::render::grid_to_color_buffer(
-            &self.grid, &self.palette, cols, 2,
-        );
+        let color_buf = crate::render::grid_to_color_buffer(&self.grid, &self.palette, cols, 2);
 
         for col in 0..cols {
             let top = &color_buf[0][col];
@@ -215,9 +215,11 @@ impl Widget for CompactGlyphWidget {
             let cell = buf.cell_mut((area.x + col as u16, area.y));
             if let Some(cell) = cell {
                 cell.set_char('▀');
-                cell.set_style(Style::default()
-                    .fg(to_ratatui_color(top))
-                    .bg(to_ratatui_color(bottom)));
+                cell.set_style(
+                    Style::default()
+                        .fg(to_ratatui_color(top))
+                        .bg(to_ratatui_color(bottom)),
+                );
             }
         }
     }

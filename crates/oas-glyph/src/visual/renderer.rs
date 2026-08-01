@@ -77,16 +77,40 @@ pub fn render_svg(
 
             match cell.cell_type {
                 CellType::Finder => {
-                    render_finder_cell(&mut svg, x, y, cell_size, config.cell_gap, cell.value, palette);
+                    render_finder_cell(
+                        &mut svg,
+                        x,
+                        y,
+                        cell_size,
+                        config.cell_gap,
+                        cell.value,
+                        palette,
+                    );
                 }
                 CellType::Kind => {
-                    render_kind_cell(&mut svg, x, y, cell_size, config.cell_gap, cell.value, palette);
+                    render_kind_cell(
+                        &mut svg,
+                        x,
+                        y,
+                        cell_size,
+                        config.cell_gap,
+                        cell.value,
+                        palette,
+                    );
                 }
                 CellType::Alignment => {
                     render_alignment_cell(&mut svg, x, y, cell_size, palette);
                 }
                 CellType::Format => {
-                    render_format_cell(&mut svg, x, y, cell_size, config.cell_gap, cell.value, palette);
+                    render_format_cell(
+                        &mut svg,
+                        x,
+                        y,
+                        cell_size,
+                        config.cell_gap,
+                        cell.value,
+                        palette,
+                    );
                 }
                 CellType::Data => {
                     render_data_cell(&mut svg, x, y, cell_size, config.cell_gap, cell, palette);
@@ -102,17 +126,26 @@ pub fn render_svg(
 /// Render a finder pattern cell.
 fn render_finder_cell(
     svg: &mut String,
-    x: f64, y: f64, size: f64, gap: f64,
+    x: f64,
+    y: f64,
+    size: f64,
+    gap: f64,
     value: u8,
     palette: &GlyphPalette,
 ) {
     let is_dark = value > 32;
-    let color = if is_dark { &palette.finder_dark } else { &palette.finder_light };
+    let color = if is_dark {
+        &palette.finder_dark
+    } else {
+        &palette.finder_light
+    };
     let inset = gap / 2.0;
     svg.push_str(&format!(
         r#"<rect x="{:.1}" y="{:.1}" width="{:.1}" height="{:.1}" rx="2" fill="{}"/>"#,
-        x + inset, y + inset,
-        size - gap, size - gap,
+        x + inset,
+        y + inset,
+        size - gap,
+        size - gap,
         color.to_hex()
     ));
 }
@@ -120,7 +153,10 @@ fn render_finder_cell(
 /// Render a kind region cell.
 fn render_kind_cell(
     svg: &mut String,
-    x: f64, y: f64, size: f64, gap: f64,
+    x: f64,
+    y: f64,
+    size: f64,
+    gap: f64,
     value: u8,
     palette: &GlyphPalette,
 ) {
@@ -129,36 +165,43 @@ fn render_kind_cell(
     let inset = gap / 2.0;
     svg.push_str(&format!(
         r#"<rect x="{:.1}" y="{:.1}" width="{:.1}" height="{:.1}" rx="1" fill="{}"/>"#,
-        x + inset, y + inset,
-        size - gap, size - gap,
+        x + inset,
+        y + inset,
+        size - gap,
+        size - gap,
         color.to_hex()
     ));
 }
 
 /// Render the alignment pattern cell.
-fn render_alignment_cell(
-    svg: &mut String,
-    x: f64, y: f64, size: f64,
-    palette: &GlyphPalette,
-) {
+fn render_alignment_cell(svg: &mut String, x: f64, y: f64, size: f64, palette: &GlyphPalette) {
     let cx = x + size / 2.0;
     let cy = y + size / 2.0;
     let r = size / 2.0 - 1.0;
     // Concentric circles
     svg.push_str(&format!(
         r#"<circle cx="{:.1}" cy="{:.1}" r="{:.1}" fill="{}"/>"#,
-        cx, cy, r, palette.finder_light.to_hex()
+        cx,
+        cy,
+        r,
+        palette.finder_light.to_hex()
     ));
     svg.push_str(&format!(
         r#"<circle cx="{:.1}" cy="{:.1}" r="{:.1}" fill="{}"/>"#,
-        cx, cy, r * 0.5, palette.finder_dark.to_hex()
+        cx,
+        cy,
+        r * 0.5,
+        palette.finder_dark.to_hex()
     ));
 }
 
 /// Render a format strip cell.
 fn render_format_cell(
     svg: &mut String,
-    x: f64, y: f64, size: f64, gap: f64,
+    x: f64,
+    y: f64,
+    size: f64,
+    gap: f64,
     value: u8,
     palette: &GlyphPalette,
 ) {
@@ -167,8 +210,10 @@ fn render_format_cell(
     let inset = gap / 2.0;
     svg.push_str(&format!(
         r#"<rect x="{:.1}" y="{:.1}" width="{:.1}" height="{:.1}" fill="{}"/>"#,
-        x + inset, y + inset,
-        size - gap, size - gap,
+        x + inset,
+        y + inset,
+        size - gap,
+        size - gap,
         color.to_hex()
     ));
 }
@@ -176,7 +221,10 @@ fn render_format_cell(
 /// Render a data cell with variable size, shape, and color.
 fn render_data_cell(
     svg: &mut String,
-    x: f64, y: f64, cell_size: f64, _gap: f64,
+    x: f64,
+    y: f64,
+    cell_size: f64,
+    _gap: f64,
     cell: &crate::encoding::grid::GlyphCell,
     palette: &GlyphPalette,
 ) {
@@ -204,24 +252,36 @@ fn render_data_cell(
             let r = (block_size * 0.1).max(1.0);
             svg.push_str(&format!(
                 r#"<rect x="{:.1}" y="{:.1}" width="{:.1}" height="{:.1}" rx="{:.1}" fill="{}"/>"#,
-                bx, by, block_size, block_size, r, color.to_hex()
+                bx,
+                by,
+                block_size,
+                block_size,
+                r,
+                color.to_hex()
             ));
         }
         CellShape::Circle => {
             let r = block_size / 2.0;
             svg.push_str(&format!(
                 r#"<circle cx="{:.1}" cy="{:.1}" r="{:.1}" fill="{}"/>"#,
-                cx, cy, r, color.to_hex()
+                cx,
+                cy,
+                r,
+                color.to_hex()
             ));
         }
         CellShape::Diamond => {
             let half = block_size / 2.0;
             svg.push_str(&format!(
                 r#"<polygon points="{:.1},{:.1} {:.1},{:.1} {:.1},{:.1} {:.1},{:.1}" fill="{}"/>"#,
-                cx, cy - half,       // top
-                cx + half, cy,       // right
-                cx, cy + half,       // bottom
-                cx - half, cy,       // left
+                cx,
+                cy - half, // top
+                cx + half,
+                cy, // right
+                cx,
+                cy + half, // bottom
+                cx - half,
+                cy, // left
                 color.to_hex()
             ));
         }
@@ -229,9 +289,12 @@ fn render_data_cell(
             let half = block_size / 2.0;
             svg.push_str(&format!(
                 r#"<polygon points="{:.1},{:.1} {:.1},{:.1} {:.1},{:.1}" fill="{}"/>"#,
-                cx, cy - half,                // top
-                cx + half, cy + half * 0.7,   // bottom-right
-                cx - half, cy + half * 0.7,   // bottom-left
+                cx,
+                cy - half, // top
+                cx + half,
+                cy + half * 0.7, // bottom-right
+                cx - half,
+                cy + half * 0.7, // bottom-left
                 color.to_hex()
             ));
         }
@@ -265,7 +328,11 @@ pub fn did_to_png(did: &str, size: u32) -> Result<Vec<u8>> {
     let mut pixmap = resvg::tiny_skia::Pixmap::new(px_size.width(), px_size.height())
         .ok_or_else(|| crate::GlyphError::Render("failed to create pixmap".into()))?;
 
-    resvg::render(&tree, resvg::tiny_skia::Transform::default(), &mut pixmap.as_mut());
+    resvg::render(
+        &tree,
+        resvg::tiny_skia::Transform::default(),
+        &mut pixmap.as_mut(),
+    );
 
     pixmap
         .encode_png()
@@ -291,7 +358,10 @@ mod tests {
     fn svg_contains_finder_pattern_elements() {
         let svg = did_to_svg(TEST_DID, None).unwrap();
         // Finder patterns produce rect elements with rx="2"
-        assert!(svg.contains(r#"rx="2""#), "SVG should contain finder pattern rects");
+        assert!(
+            svg.contains(r#"rx="2""#),
+            "SVG should contain finder pattern rects"
+        );
     }
 
     #[test]
@@ -299,14 +369,21 @@ mod tests {
         let svg = did_to_svg(TEST_DID, None).unwrap();
         // Alignment pattern is rendered as concentric circles
         let circle_count = svg.matches("<circle").count();
-        assert!(circle_count >= 2, "SVG should contain alignment circles, found {}", circle_count);
+        assert!(
+            circle_count >= 2,
+            "SVG should contain alignment circles, found {}",
+            circle_count
+        );
     }
 
     #[test]
     fn svg_contains_polygon_shapes() {
         let svg = did_to_svg(TEST_DID, None).unwrap();
         // Diamond and triangle shapes use polygon
-        assert!(svg.contains("<polygon"), "SVG should contain polygon elements for diamonds/triangles");
+        assert!(
+            svg.contains("<polygon"),
+            "SVG should contain polygon elements for diamonds/triangles"
+        );
     }
 
     #[test]
@@ -319,7 +396,10 @@ mod tests {
     fn svg_has_background_rect() {
         let svg = did_to_svg(TEST_DID, None).unwrap();
         // Default config includes background
-        assert!(svg.contains(r#"x="0" y="0""#), "SVG should have background rect at origin");
+        assert!(
+            svg.contains(r#"x="0" y="0""#),
+            "SVG should have background rect at origin"
+        );
     }
 
     #[test]
@@ -360,7 +440,8 @@ mod tests {
         let svg2 = did_to_svg(
             "did:oas:l1fe:hmr:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
             None,
-        ).unwrap();
+        )
+        .unwrap();
         assert_ne!(svg1, svg2, "different DIDs must produce different SVGs");
     }
 

@@ -17,8 +17,8 @@
 //!    the background, so subtle format-strip and dim data cells still contribute
 //!    to the visual density.
 
-use crate::{RenderOptions, GlyphSize, Result};
-use super::{fg, reset, grid_to_color_buffer};
+use super::{fg, grid_to_color_buffer, reset};
+use crate::{GlyphSize, RenderOptions, Result};
 use oas_glyph::encoding::GlyphGrid;
 use oas_glyph::visual::palette::{Color, GlyphPalette};
 
@@ -35,11 +35,7 @@ const BRAILLE_DOTS: [[u8; 2]; 4] = [
 
 /// Render using Braille dot patterns with per-character color.
 #[allow(clippy::needless_range_loop)]
-pub fn render(
-    grid: &GlyphGrid,
-    palette: &GlyphPalette,
-    opts: &RenderOptions,
-) -> Result<String> {
+pub fn render(grid: &GlyphGrid, palette: &GlyphPalette, opts: &RenderOptions) -> Result<String> {
     let (char_cols, char_rows) = resolve_size(opts);
 
     // Each Braille character covers 2 dots wide × 4 dots tall.
@@ -116,9 +112,7 @@ fn resolve_size(opts: &RenderOptions) -> (usize, usize) {
         GlyphSize::Cells(w, h) => (w as usize, h as usize),
         GlyphSize::Compact => (12, 12),
         GlyphSize::Auto => {
-            let term_cols = crossterm::terminal::size()
-                .map(|(c, _)| c)
-                .unwrap_or(80);
+            let term_cols = crossterm::terminal::size().map(|(c, _)| c).unwrap_or(80);
             let side = ((term_cols as f64 * 0.30) as usize).clamp(12, 32);
             (side, side)
         }

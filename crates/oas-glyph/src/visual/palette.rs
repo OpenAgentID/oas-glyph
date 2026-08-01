@@ -39,11 +39,7 @@ impl Color {
     /// Create from HSL values.
     pub fn from_hsl(h: f64, s: f64, l: f64) -> Self {
         let (r, g, b) = hsl_to_rgb(h, s, l);
-        Self::rgb(
-            (r * 255.0) as u8,
-            (g * 255.0) as u8,
-            (b * 255.0) as u8,
-        )
+        Self::rgb((r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8)
     }
 
     /// Lerp between two colors.
@@ -155,8 +151,12 @@ fn hsl_to_rgb(h: f64, s: f64, l: f64) -> (f64, f64, f64) {
 }
 
 fn hue_to_rgb(p: f64, q: f64, mut t: f64) -> f64 {
-    if t < 0.0 { t += 1.0; }
-    if t > 1.0 { t -= 1.0; }
+    if t < 0.0 {
+        t += 1.0;
+    }
+    if t > 1.0 {
+        t -= 1.0;
+    }
     if t < 1.0 / 6.0 {
         p + (q - p) * 6.0 * t
     } else if t < 1.0 / 2.0 {
@@ -184,8 +184,12 @@ mod tests {
 
     #[test]
     fn different_dids_different_palettes() {
-        let p1 = GlyphPalette::from_did("did:oas:l1fe:agent:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK");
-        let p2 = GlyphPalette::from_did("did:oas:l1fe:hmr:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp");
+        let p1 = GlyphPalette::from_did(
+            "did:oas:l1fe:agent:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
+        );
+        let p2 = GlyphPalette::from_did(
+            "did:oas:l1fe:hmr:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
+        );
         // Very unlikely to be identical
         assert!(
             p1.primary.r != p2.primary.r
@@ -205,8 +209,7 @@ mod tests {
     #[test]
     fn distinct_palettes_for_each_kind() {
         let kinds = [
-            "hmr", "mhr", "ao", "agent", "tool",
-            "skill", "workflow", "model", "dataset", "service",
+            "hmr", "mhr", "ao", "agent", "tool", "skill", "workflow", "model", "dataset", "service",
         ];
         let palettes: Vec<GlyphPalette> = kinds
             .iter()
@@ -236,13 +239,17 @@ mod tests {
 
     #[test]
     fn palette_has_four_data_colors() {
-        let p = GlyphPalette::from_did("did:oas:l1fe:agent:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK");
+        let p = GlyphPalette::from_did(
+            "did:oas:l1fe:agent:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
+        );
         assert_eq!(p.data_colors.len(), 4);
     }
 
     #[test]
     fn data_colors_visually_distinct() {
-        let p = GlyphPalette::from_did("did:oas:l1fe:agent:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK");
+        let p = GlyphPalette::from_did(
+            "did:oas:l1fe:agent:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
+        );
         // At least some of the 4 data colors should differ
         let mut all_same = true;
         for i in 1..4 {

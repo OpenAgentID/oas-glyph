@@ -2,10 +2,10 @@
 //!
 //! Draws Unicode box-drawing borders around glyphs with entity metadata.
 
-use crate::{RenderOptions, BorderStyle};
-use oas_glyph::ParsedDid;
+use super::{bg, bold, dim, reset};
+use crate::{BorderStyle, RenderOptions};
 use oas_glyph::visual::palette::GlyphPalette;
-use super::{bg, reset, bold, dim};
+use oas_glyph::ParsedDid;
 
 /// Border character sets.
 struct BoxChars {
@@ -20,19 +20,44 @@ struct BoxChars {
 fn chars_for(style: BorderStyle) -> BoxChars {
     match style {
         BorderStyle::Single => BoxChars {
-            tl: '┌', tr: '┐', bl: '└', br: '┘', h: '─', v: '│',
+            tl: '┌',
+            tr: '┐',
+            bl: '└',
+            br: '┘',
+            h: '─',
+            v: '│',
         },
         BorderStyle::Double => BoxChars {
-            tl: '╔', tr: '╗', bl: '╚', br: '╝', h: '═', v: '║',
+            tl: '╔',
+            tr: '╗',
+            bl: '╚',
+            br: '╝',
+            h: '═',
+            v: '║',
         },
         BorderStyle::Rounded => BoxChars {
-            tl: '╭', tr: '╮', bl: '╰', br: '╯', h: '─', v: '│',
+            tl: '╭',
+            tr: '╮',
+            bl: '╰',
+            br: '╯',
+            h: '─',
+            v: '│',
         },
         BorderStyle::Heavy => BoxChars {
-            tl: '┏', tr: '┓', bl: '┗', br: '┛', h: '━', v: '┃',
+            tl: '┏',
+            tr: '┓',
+            bl: '┗',
+            br: '┛',
+            h: '━',
+            v: '┃',
         },
         BorderStyle::None => BoxChars {
-            tl: ' ', tr: ' ', bl: ' ', br: ' ', h: ' ', v: ' ',
+            tl: ' ',
+            tr: ' ',
+            bl: ' ',
+            br: ' ',
+            h: ' ',
+            v: ' ',
         },
     }
 }

@@ -10,8 +10,8 @@
 //! It produces beautiful results in Alacritty, WezTerm, iTerm2, Kitty, GNOME
 //! Terminal, Windows Terminal, and most modern emulators.
 
-use crate::{RenderOptions, GlyphSize, Result};
-use super::{fg, bg, reset, grid_to_color_buffer};
+use super::{bg, fg, grid_to_color_buffer, reset};
+use crate::{GlyphSize, RenderOptions, Result};
 use oas_glyph::encoding::GlyphGrid;
 use oas_glyph::visual::palette::GlyphPalette;
 
@@ -24,15 +24,15 @@ const FULL_BLOCK: char = '█';
 const LOWER_HALF: char = '▄';
 
 /// Render a glyph grid using Unicode half-block characters.
-pub fn render(
-    grid: &GlyphGrid,
-    palette: &GlyphPalette,
-    opts: &RenderOptions,
-) -> Result<String> {
+pub fn render(grid: &GlyphGrid, palette: &GlyphPalette, opts: &RenderOptions) -> Result<String> {
     let (cols, pixel_rows) = resolve_size(opts);
 
     // pixel_rows must be even (two pixels per character row)
-    let pixel_rows = if pixel_rows % 2 != 0 { pixel_rows + 1 } else { pixel_rows };
+    let pixel_rows = if pixel_rows % 2 != 0 {
+        pixel_rows + 1
+    } else {
+        pixel_rows
+    };
 
     let buffer = grid_to_color_buffer(grid, palette, cols, pixel_rows);
     let char_rows = pixel_rows / 2;
@@ -42,8 +42,11 @@ pub fn render(
     for cr in 0..char_rows {
         output.push_str("  "); // Left margin
 
-        for (top, bottom) in buffer[cr * 2].iter().zip(buffer[cr * 2 + 1].iter()).take(cols) {
-
+        for (top, bottom) in buffer[cr * 2]
+            .iter()
+            .zip(buffer[cr * 2 + 1].iter())
+            .take(cols)
+        {
             if top.r == bottom.r && top.g == bottom.g && top.b == bottom.b {
                 // Same color → full block (saves bytes)
                 output.push_str(&fg(top));
@@ -72,14 +75,10 @@ pub fn render(
 fn resolve_size(opts: &RenderOptions) -> (usize, usize) {
     match opts.size {
         GlyphSize::Cells(w, _h) => (w as usize, w as usize), // square
-        GlyphSize::Pixels(w, h) => {
-            ((w / 4) as usize, (h / 4) as usize)
-        }
+        GlyphSize::Pixels(w, h) => ((w / 4) as usize, (h / 4) as usize),
         GlyphSize::Compact => (16, 16),
         GlyphSize::Auto => {
-            let term_cols = crossterm::terminal::size()
-                .map(|(c, _)| c)
-                .unwrap_or(80);
+            let term_cols = crossterm::terminal::size().map(|(c, _)| c).unwrap_or(80);
             // ~35% of terminal width, square output
             let cols = ((term_cols as f64 * 0.35) as usize).clamp(16, 40);
             (cols, cols)
@@ -90,10 +89,7 @@ fn resolve_size(opts: &RenderOptions) -> (usize, usize) {
 /// Render a compact inline glyph (single line, minimal width).
 ///
 /// Uses a 6-cell wide representation with the kind badge colored.
-pub fn render_compact(
-    grid: &GlyphGrid,
-    palette: &GlyphPalette,
-) -> String {
+pub fn render_compact(grid: &GlyphGrid, palette: &GlyphPalette) -> String {
     let buffer = grid_to_color_buffer(grid, palette, 6, 6);
     let mut out = String::new();
 

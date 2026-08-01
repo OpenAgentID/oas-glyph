@@ -9,10 +9,10 @@
 //! 4. Map corrected codewords onto the grid's data cells
 //! 5. Split each cell's value into three visual channels (size, shape, hue)
 
-pub mod payload;
 pub mod grid;
+pub mod payload;
 pub mod reed_solomon;
 
-pub use payload::*;
 pub use grid::*;
+pub use payload::*;
 pub use reed_solomon::*;

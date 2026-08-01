@@ -74,14 +74,11 @@ impl ScanResult {
 /// * `width` - Image width
 /// * `height` - Image height
 /// * `data_len` - Expected data payload length (before ECC)
-pub fn scan_glyph(
-    pixels: &[u8],
-    width: u32,
-    height: u32,
-    data_len: usize,
-) -> Result<ScanResult> {
+pub fn scan_glyph(pixels: &[u8], width: u32, height: u32, data_len: usize) -> Result<ScanResult> {
     if pixels.len() != (width * height * 4) as usize {
-        return Err(GlyphError::InvalidImage("pixel buffer size mismatch".into()));
+        return Err(GlyphError::InvalidImage(
+            "pixel buffer size mismatch".into(),
+        ));
     }
 
     // Step 1: Detect grid bounds by finding finder patterns
@@ -134,11 +131,7 @@ struct GridBounds {
 ///    brightness gradient analysis (high-contrast dark-light-dark transitions).
 /// 2. If 3 finder corners are located, compute grid bounds from their positions.
 /// 3. Falls back to dimension-based estimation for clean, axis-aligned images.
-fn detect_grid_bounds(
-    pixels: &[u8],
-    width: u32,
-    height: u32,
-) -> Result<GridBounds> {
+fn detect_grid_bounds(pixels: &[u8], width: u32, height: u32) -> Result<GridBounds> {
     // Attempt finder pattern detection via brightness analysis
     if let Some(bounds) = detect_finders_by_brightness(pixels, width, height) {
         return Ok(bounds);
@@ -235,11 +228,7 @@ struct FinderCorner {
 ///
 /// Searches the four quadrants of the image for the nested-square pattern.
 /// The glyph has finders at top-left, top-right, and bottom-right.
-fn detect_finders_by_brightness(
-    pixels: &[u8],
-    width: u32,
-    height: u32,
-) -> Option<GridBounds> {
+fn detect_finders_by_brightness(pixels: &[u8], width: u32, height: u32) -> Option<GridBounds> {
     if width < 24 || height < 24 {
         return None;
     }
@@ -330,10 +319,7 @@ fn detect_finders_by_brightness(
         }
         (Some(tl), None, Some(br)) => {
             // Infer TR from TL and BR
-            let tr = FinderCorner {
-                x: br.x,
-                y: tl.y,
-            };
+            let tr = FinderCorner { x: br.x, y: tl.y };
             (tl, tr, br)
         }
         _ => return None,
@@ -361,11 +347,7 @@ fn detect_finders_by_brightness(
 }
 
 /// Sample the grid to extract cell values.
-fn sample_grid(
-    pixels: &[u8],
-    width: u32,
-    bounds: &GridBounds,
-) -> Result<Vec<Vec<u8>>> {
+fn sample_grid(pixels: &[u8], width: u32, bounds: &GridBounds) -> Result<Vec<Vec<u8>>> {
     let mut values = vec![vec![0u8; GRID_SIZE]; GRID_SIZE];
 
     for (row, row_values) in values.iter_mut().enumerate() {
@@ -421,7 +403,11 @@ fn approximate_hue(r: f64, g: f64, b: f64) -> f64 {
         60.0 * (((r - g) / delta) + 4.0)
     };
 
-    if hue < 0.0 { hue + 360.0 } else { hue }
+    if hue < 0.0 {
+        hue + 360.0
+    } else {
+        hue
+    }
 }
 
 /// Convert 6-bit values back to bytes.

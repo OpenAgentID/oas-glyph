@@ -181,8 +181,7 @@ mod tests {
     #[test]
     fn test_all_kinds() {
         let kinds = [
-            "hmr", "mhr", "ao", "agent", "tool", "skill",
-            "workflow", "model", "dataset", "service",
+            "hmr", "mhr", "ao", "agent", "tool", "skill", "workflow", "model", "dataset", "service",
         ];
         for kind in kinds {
             let did = format!(

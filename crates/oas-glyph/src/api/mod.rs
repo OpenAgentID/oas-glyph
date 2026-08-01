@@ -242,10 +242,7 @@ pub struct LivezResponse {
 // --- Handlers ---
 
 async fn healthz() -> Json<HealthResponse> {
-    let uptime = START_TIME
-        .get()
-        .map(|t| t.elapsed().as_secs())
-        .unwrap_or(0);
+    let uptime = START_TIME.get().map(|t| t.elapsed().as_secs()).unwrap_or(0);
 
     Json(HealthResponse {
         status: "ok".to_string(),
@@ -261,7 +258,9 @@ async fn livez() -> std::result::Result<Json<LivezResponse>, ApiError> {
         .map_err(|e| ApiError::internal(format!("liveness glyph failed: {}", e)))?;
 
     if svg.is_empty() {
-        return Err(ApiError::internal("liveness glyph produced empty output".to_string()));
+        return Err(ApiError::internal(
+            "liveness glyph produced empty output".to_string(),
+        ));
     }
 
     Ok(Json(LivezResponse {
@@ -292,15 +291,12 @@ async fn generate_glyph(
 
     let data = match format.as_str() {
         "png" => {
-            let png_bytes = did_to_png(&req.did, config.size)
-                .map_err(|e| ApiError::internal(e.to_string()))?;
+            let png_bytes =
+                did_to_png(&req.did, config.size).map_err(|e| ApiError::internal(e.to_string()))?;
             use base64::Engine;
             base64::engine::general_purpose::STANDARD.encode(&png_bytes)
         }
-        _ => {
-            did_to_svg(&req.did, Some(config))
-                .map_err(|e| ApiError::internal(e.to_string()))?
-        }
+        _ => did_to_svg(&req.did, Some(config)).map_err(|e| ApiError::internal(e.to_string()))?,
     };
 
     Ok(Json(GenerateResponse {
@@ -333,10 +329,7 @@ async fn get_glyph_svg(
     let svg = did_to_svg(&did, Some(config))
         .map_err(|e| ApiError::bad_request("INVALID_DID", e.to_string()))?;
 
-    Ok((
-        [(header::CONTENT_TYPE, "image/svg+xml")],
-        svg,
-    ).into_response())
+    Ok(([(header::CONTENT_TYPE, "image/svg+xml")], svg).into_response())
 }
 
 async fn get_glyph_png(
@@ -349,13 +342,9 @@ async fn get_glyph_png(
 
     let size = query.size.unwrap_or(512);
 
-    let png_bytes = did_to_png(&did, size)
-        .map_err(|e| ApiError::internal(e.to_string()))?;
+    let png_bytes = did_to_png(&did, size).map_err(|e| ApiError::internal(e.to_string()))?;
 
-    Ok((
-        [(header::CONTENT_TYPE, "image/png")],
-        png_bytes,
-    ).into_response())
+    Ok(([(header::CONTENT_TYPE, "image/png")], png_bytes).into_response())
 }
 
 async fn get_palette(

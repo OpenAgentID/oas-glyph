@@ -25,9 +25,13 @@ pub fn detect_capability() -> GraphicsCapability {
         }
     }
 
-    let term_program = std::env::var("TERM_PROGRAM").unwrap_or_default().to_lowercase();
+    let term_program = std::env::var("TERM_PROGRAM")
+        .unwrap_or_default()
+        .to_lowercase();
     let term = std::env::var("TERM").unwrap_or_default().to_lowercase();
-    let colorterm = std::env::var("COLORTERM").unwrap_or_default().to_lowercase();
+    let colorterm = std::env::var("COLORTERM")
+        .unwrap_or_default()
+        .to_lowercase();
     let kitty_id = std::env::var("KITTY_WINDOW_ID");
     let ghostty = std::env::var("GHOSTTY_RESOURCES_DIR");
 
@@ -90,7 +94,9 @@ fn supports_unicode() -> bool {
     let lc_all = std::env::var("LC_ALL").unwrap_or_default().to_lowercase();
     let lc_ctype = std::env::var("LC_CTYPE").unwrap_or_default().to_lowercase();
 
-    lang.contains("utf") || lc_all.contains("utf") || lc_ctype.contains("utf")
+    lang.contains("utf")
+        || lc_all.contains("utf")
+        || lc_ctype.contains("utf")
         || lang.contains("unicode")
 }
 
@@ -126,14 +132,22 @@ pub fn print_diagnostics() {
     let (cw, ch) = cell_pixel_size();
 
     println!("┌─ OpenAgent Glyph Terminal Diagnostics ──────────┐");
-    println!("│ TERM_PROGRAM: {:>28} │",
-        std::env::var("TERM_PROGRAM").unwrap_or_else(|_| "(unset)".into()));
-    println!("│ TERM:         {:>28} │",
-        std::env::var("TERM").unwrap_or_else(|_| "(unset)".into()));
-    println!("│ COLORTERM:    {:>28} │",
-        std::env::var("COLORTERM").unwrap_or_else(|_| "(unset)".into()));
-    println!("│ Tmux:         {:>28} │",
-        if in_tmux() { "yes" } else { "no" });
+    println!(
+        "│ TERM_PROGRAM: {:>28} │",
+        std::env::var("TERM_PROGRAM").unwrap_or_else(|_| "(unset)".into())
+    );
+    println!(
+        "│ TERM:         {:>28} │",
+        std::env::var("TERM").unwrap_or_else(|_| "(unset)".into())
+    );
+    println!(
+        "│ COLORTERM:    {:>28} │",
+        std::env::var("COLORTERM").unwrap_or_else(|_| "(unset)".into())
+    );
+    println!(
+        "│ Tmux:         {:>28} │",
+        if in_tmux() { "yes" } else { "no" }
+    );
     println!("│ Cell size:    {:>24}×{}px │", cw, ch);
     println!("│ Detected:     {:>28} │", cap.label());
     println!("└──────────────────────────────────────────────┘");

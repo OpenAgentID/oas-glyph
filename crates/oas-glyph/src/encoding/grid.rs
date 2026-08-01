@@ -89,12 +89,18 @@ impl GlyphGrid {
     /// Create a new grid and map the codeword onto data cells.
     #[allow(clippy::needless_range_loop)]
     pub fn from_codeword(codeword: &[u8], kind: EntityKind) -> Result<Self> {
-        let mut cells = vec![vec![GlyphCell {
-            row: 0,
-            col: 0,
-            cell_type: CellType::Data,
-            value: 0,
-        }; GRID_SIZE]; GRID_SIZE];
+        let mut cells = vec![
+            vec![
+                GlyphCell {
+                    row: 0,
+                    col: 0,
+                    cell_type: CellType::Data,
+                    value: 0,
+                };
+                GRID_SIZE
+            ];
+            GRID_SIZE
+        ];
 
         // Initialize cell positions and types
         let mut data_positions = Vec::new();
@@ -212,9 +218,9 @@ fn classify_cell(row: usize, col: usize) -> CellType {
 /// Finder patterns use a nested square motif: dark-light-dark.
 fn set_finder_patterns(cells: &mut [Vec<GlyphCell>]) {
     let corners = [
-        (0, 0),                          // Top-left
-        (0, GRID_SIZE - 3),              // Top-right
-        (GRID_SIZE - 3, GRID_SIZE - 3),  // Bottom-right
+        (0, 0),                         // Top-left
+        (0, GRID_SIZE - 3),             // Top-right
+        (GRID_SIZE - 3, GRID_SIZE - 3), // Bottom-right
     ];
 
     for &(sr, sc) in &corners {
@@ -261,9 +267,21 @@ fn set_kind_region(cells: &mut [Vec<GlyphCell>], kind: EntityKind) {
             // Generic pattern derived from kind value
             let v = kind_val * 17; // spread across byte
             [
-                [v.wrapping_mul(3) & 0x3F, v.wrapping_mul(5) & 0x3F, v.wrapping_mul(7) & 0x3F],
-                [v.wrapping_mul(11) & 0x3F, v.wrapping_mul(13) & 0x3F, v.wrapping_mul(17) & 0x3F],
-                [v.wrapping_mul(19) & 0x3F, v.wrapping_mul(23) & 0x3F, v.wrapping_mul(29) & 0x3F],
+                [
+                    v.wrapping_mul(3) & 0x3F,
+                    v.wrapping_mul(5) & 0x3F,
+                    v.wrapping_mul(7) & 0x3F,
+                ],
+                [
+                    v.wrapping_mul(11) & 0x3F,
+                    v.wrapping_mul(13) & 0x3F,
+                    v.wrapping_mul(17) & 0x3F,
+                ],
+                [
+                    v.wrapping_mul(19) & 0x3F,
+                    v.wrapping_mul(23) & 0x3F,
+                    v.wrapping_mul(29) & 0x3F,
+                ],
             ]
         }
     };

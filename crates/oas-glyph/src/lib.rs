@@ -40,10 +40,10 @@
 //! full DID string. This ensures every identity has a unique, consistent color
 //! scheme across all renderings.
 
-pub mod encoding;
-pub mod visual;
-pub mod scanner;
 pub mod api;
+pub mod encoding;
+pub mod scanner;
+pub mod visual;
 
 use thiserror::Error;
 
@@ -194,20 +194,20 @@ impl ParsedDid {
         let namespace = parts[2].to_string();
 
         // Handle compound kinds like "agent:instance"
-        let (kind_str, identifier) = if parts.len() == 6 && parts[3] == "agent" && parts[4] == "instance" {
-            ("agent:instance", parts[5].to_string())
-        } else if parts.len() == 5 {
-            (parts[3], parts[4].to_string())
-        } else {
-            return Err(GlyphError::InvalidDid(format!(
-                "unexpected DID structure: '{}'",
-                did
-            )));
-        };
+        let (kind_str, identifier) =
+            if parts.len() == 6 && parts[3] == "agent" && parts[4] == "instance" {
+                ("agent:instance", parts[5].to_string())
+            } else if parts.len() == 5 {
+                (parts[3], parts[4].to_string())
+            } else {
+                return Err(GlyphError::InvalidDid(format!(
+                    "unexpected DID structure: '{}'",
+                    did
+                )));
+            };
 
-        let kind = EntityKind::parse_kind(kind_str).ok_or_else(|| {
-            GlyphError::InvalidDid(format!("unknown kind: '{}'", kind_str))
-        })?;
+        let kind = EntityKind::parse_kind(kind_str)
+            .ok_or_else(|| GlyphError::InvalidDid(format!("unknown kind: '{}'", kind_str)))?;
 
         Ok(Self {
             did: did.to_string(),

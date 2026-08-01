@@ -4,13 +4,13 @@
 //! All renderers produce a `String` containing the appropriate ANSI/protocol
 //! escape sequences that can be printed to stdout.
 
-pub mod halfblock;
-pub mod braille;
 pub mod ascii;
-pub mod kitty;
-pub mod iterm2;
-pub mod sixel;
 pub mod border;
+pub mod braille;
+pub mod halfblock;
+pub mod iterm2;
+pub mod kitty;
+pub mod sixel;
 
 use oas_glyph::visual::palette::{Color, GlyphPalette};
 use oas_glyph::ParsedDid;
@@ -176,7 +176,7 @@ pub fn grid_to_color_buffer_mode(
                                 0 => 0.55, // dim
                                 1 => 0.72,
                                 2 => 0.88,
-                                3 => 1.0,  // full brightness
+                                3 => 1.0, // full brightness
                                 _ => 0.72,
                             };
                             Color::rgb(
@@ -194,8 +194,10 @@ pub fn grid_to_color_buffer_mode(
                             let local_y = (py as f64 - gr as f64 * cell_h) / cell_h;
                             let margin = (1.0 - frac) / 2.0;
 
-                            if local_x >= margin && local_x <= 1.0 - margin
-                                && local_y >= margin && local_y <= 1.0 - margin
+                            if local_x >= margin
+                                && local_x <= 1.0 - margin
+                                && local_y >= margin
+                                && local_y <= 1.0 - margin
                             {
                                 base_color
                             } else {

@@ -17,9 +17,11 @@ pub fn render(png_data: &[u8], _opts: &RenderOptions) -> Result<String> {
     // Kitty protocol supports chunked transmission for large images.
     // Each chunk is max 4096 bytes of base64 data.
     let chunk_size = 4096;
-    let chunks: Vec<&str> = b64.as_bytes().chunks(chunk_size).map(|c| {
-        std::str::from_utf8(c).unwrap_or("")
-    }).collect();
+    let chunks: Vec<&str> = b64
+        .as_bytes()
+        .chunks(chunk_size)
+        .map(|c| std::str::from_utf8(c).unwrap_or(""))
+        .collect();
 
     let mut output = String::with_capacity(b64.len() + chunks.len() * 64);
 
@@ -30,16 +32,10 @@ pub fn render(png_data: &[u8], _opts: &RenderOptions) -> Result<String> {
 
         if is_first {
             // First chunk includes the image metadata
-            output.push_str(&format!(
-                "\x1b_Gf=100,a=T,t=d,m={};{}\x1b\\",
-                more, chunk
-            ));
+            output.push_str(&format!("\x1b_Gf=100,a=T,t=d,m={};{}\x1b\\", more, chunk));
         } else {
             // Continuation chunks
-            output.push_str(&format!(
-                "\x1b_Gm={};{}\x1b\\",
-                more, chunk
-            ));
+            output.push_str(&format!("\x1b_Gm={};{}\x1b\\", more, chunk));
         }
     }
 

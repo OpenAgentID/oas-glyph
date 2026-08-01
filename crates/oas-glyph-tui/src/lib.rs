@@ -39,8 +39,8 @@
 //! trait, so glyphs can be embedded in any ratatui-based TUI application as a
 //! first-class UI component alongside tables, charts, and forms.
 
-pub mod render;
 pub mod detect;
+pub mod render;
 pub mod widget;
 
 use thiserror::Error;
@@ -164,7 +164,9 @@ pub enum BorderStyle {
 /// ).unwrap();
 /// ```
 pub fn render_to_stdout(did: &str, opts: &RenderOptions) -> Result<()> {
-    let cap = opts.force_renderer.unwrap_or_else(detect::detect_capability);
+    let cap = opts
+        .force_renderer
+        .unwrap_or_else(detect::detect_capability);
     let output = render_to_string(did, opts, cap)?;
     print!("{}", output);
     Ok(())

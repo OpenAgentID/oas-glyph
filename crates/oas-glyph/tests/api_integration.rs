@@ -23,7 +23,9 @@ async fn healthz_returns_json_ok() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::OK);
-    let body = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
     assert_eq!(json["status"], "ok");
     assert_eq!(json["version"], "0.1.0");
@@ -45,7 +47,9 @@ async fn livez_returns_ok_with_glyph_bytes() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::OK);
-    let body = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
     assert_eq!(json["status"], "ok");
     assert!(json["glyph_bytes"].as_u64().unwrap() > 0);
@@ -73,7 +77,9 @@ async fn generate_glyph_svg() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::OK);
-    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
     assert_eq!(json["kind"], "agent");
     assert_eq!(json["namespace"], "l1fe");
@@ -103,7 +109,9 @@ async fn generate_glyph_png() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::OK);
-    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
     assert_eq!(json["format"], "png");
     // Data should be base64-encoded
@@ -130,7 +138,9 @@ async fn generate_invalid_did_returns_error_envelope() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
-    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
     assert_eq!(json["error"]["code"], "INVALID_DID");
     assert!(json["error"]["message"].as_str().unwrap().len() > 0);
@@ -140,9 +150,8 @@ async fn generate_invalid_did_returns_error_envelope() {
 
 #[tokio::test]
 async fn get_glyph_svg_by_path() {
-    let did_encoded = urlencoding::encode(
-        "did:oas:l1fe:agent:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
-    );
+    let did_encoded =
+        urlencoding::encode("did:oas:l1fe:agent:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK");
 
     let resp = app()
         .oneshot(
@@ -155,9 +164,16 @@ async fn get_glyph_svg_by_path() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::OK);
-    let ct = resp.headers().get("content-type").unwrap().to_str().unwrap();
+    let ct = resp
+        .headers()
+        .get("content-type")
+        .unwrap()
+        .to_str()
+        .unwrap();
     assert_eq!(ct, "image/svg+xml");
-    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let svg = String::from_utf8(bytes.to_vec()).unwrap();
     assert!(svg.starts_with("<svg"));
 }
@@ -166,9 +182,8 @@ async fn get_glyph_svg_by_path() {
 
 #[tokio::test]
 async fn get_glyph_png_by_path() {
-    let did_encoded = urlencoding::encode(
-        "did:oas:l1fe:tool:z6MknGc3ocHs3zdPiJbnaaqDi5RNw3A6tDfHPbp7ihKBpKG3",
-    );
+    let did_encoded =
+        urlencoding::encode("did:oas:l1fe:tool:z6MknGc3ocHs3zdPiJbnaaqDi5RNw3A6tDfHPbp7ihKBpKG3");
 
     let resp = app()
         .oneshot(
@@ -181,9 +196,16 @@ async fn get_glyph_png_by_path() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::OK);
-    let ct = resp.headers().get("content-type").unwrap().to_str().unwrap();
+    let ct = resp
+        .headers()
+        .get("content-type")
+        .unwrap()
+        .to_str()
+        .unwrap();
     assert_eq!(ct, "image/png");
-    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     // PNG magic bytes
     assert_eq!(bytes[0], 0x89);
     assert_eq!(bytes[1], 0x50);
@@ -208,7 +230,9 @@ async fn get_palette_valid_did() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::OK);
-    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
     assert!(json["primary"].as_str().unwrap().starts_with('#'));
     assert!(json["background"].as_str().unwrap().starts_with('#'));
@@ -227,7 +251,9 @@ async fn get_palette_invalid_did_returns_error() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
-    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
     assert!(json["error"]["code"].as_str().is_some());
 }
@@ -253,7 +279,9 @@ async fn glyph_info_valid_did() {
         .unwrap();
 
     assert_eq!(resp.status(), StatusCode::OK);
-    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+    let bytes = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
     assert_eq!(json["grid_size"], 12);
     assert!(json["data_cells"].as_u64().unwrap() > 80);
