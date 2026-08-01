@@ -81,12 +81,12 @@ pub fn render(grid: &GlyphGrid, palette: &GlyphPalette, opts: &RenderOptions) ->
                 }
             }
 
-            if lit_count > 0 {
-                let avg = Color::rgb(
-                    (color_r / lit_count) as u8,
-                    (color_g / lit_count) as u8,
-                    (color_b / lit_count) as u8,
-                );
+            if let (Some(r), Some(g), Some(b)) = (
+                color_r.checked_div(lit_count),
+                color_g.checked_div(lit_count),
+                color_b.checked_div(lit_count),
+            ) {
+                let avg = Color::rgb(r as u8, g as u8, b as u8);
                 output.push_str(&fg(&avg));
             }
 

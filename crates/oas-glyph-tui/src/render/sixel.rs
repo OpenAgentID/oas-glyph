@@ -128,7 +128,7 @@ fn quantize_palette(img: &image::RgbaImage, max_colors: usize) -> Vec<(u8, u8, u
     }
 
     let mut colors: Vec<_> = color_counts.into_iter().collect();
-    colors.sort_by(|a, b| b.1.cmp(&a.1)); // Most frequent first
+    colors.sort_by_key(|b| std::cmp::Reverse(b.1)); // Most frequent first
     colors.truncate(max_colors);
 
     colors.into_iter().map(|((r, g, b), _)| (r, g, b)).collect()
