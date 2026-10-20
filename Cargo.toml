@@ -23,7 +23,7 @@ bitvec = "1"
 
 # Visual generation
 tiny-skia = "0.11"
-resvg = "0.44"
+resvg = "0.48"
 
 # API
 axum = { version = "0.7", features = ["json", "multipart"] }
