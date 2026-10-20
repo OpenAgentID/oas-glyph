@@ -14,7 +14,7 @@ repository = "https://github.com/OpenAgentID/oas-glyph"
 [workspace.dependencies]
 # Crypto — aligned with OAS stack
 blake3 = "1"
-ed25519-dalek = { version = "2", features = ["rand_core"] }
+ed25519-dalek = { version = "3", features = ["rand_core"] }
 bs58 = "0.5"
 
 # Encoding
